@@ -1,0 +1,25 @@
+language: go
+
+sudo: false
+
+go:
+    - 1.7.x
+    - 1.8.x
+    - 1.9.x
+    - 1.10.x
+    - 1.11.x
+    - tip
+
+branches:
+    only:
+        - master
+        - /^v\d+\.\d+\.\d+(-\S*)?$/
+
+matrix:
+    fast_finish: true
+    allow_failures:
+        - go: tip
+
+install: make dep
+
+script: make test

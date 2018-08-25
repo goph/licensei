@@ -1,0 +1,13 @@
+/bin/
+/glide.lock
+/Gopkg.lock
+/vendor/
+
+# IDE integration
+/.vscode/*
+!/.vscode/tasks.json
+/.idea/*
+!/.idea/runConfigurations/
+!/.idea/modules.xml
+!/.idea/*.iml
+!/.idea/go.imports.xml
