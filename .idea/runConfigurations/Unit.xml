@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Unit" type="GoTestRunConfiguration" factoryName="Go Test">
-    <module name="license" />
+    <module name="lisensei" />
     <working_directory value="$PROJECT_DIR$/" />
     <framework value="gotest" />
     <kind value="DIRECTORY" />

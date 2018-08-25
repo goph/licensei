@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/goph/license/pkg/detector/srcd"
-	"github.com/goph/license/pkg/licensed"
+	"github.com/goph/lisensei/pkg/detector/srcd"
+	"github.com/goph/lisensei/pkg/licensed"
 	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
 )
 
