@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/lisensei.iml" filepath="$PROJECT_DIR$/.idea/lisensei.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../licensei/.idea/licensei.iml" filepath="$PROJECT_DIR$/../licensei/.idea/licensei.iml" />
     </modules>
   </component>
 </project>

@@ -1,4 +1,4 @@
-package srcd
+package sourced
 
 import (
 	"context"
