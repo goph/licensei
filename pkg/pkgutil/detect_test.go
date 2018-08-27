@@ -16,7 +16,7 @@ func TestDetectPackageManagers(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			pkgmgrs, err := DetectPackageManagers("testdata/detect/"+name)
+			pkgmgrs, err := DetectPackageManagers("testdata/detect/" + name)
 			if err != nil {
 				t.Fatal(err)
 			}
