@@ -2,6 +2,7 @@ package licensei
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/goph/licensei/internal/licensei"
@@ -82,6 +83,8 @@ func runCheck(options checkOptions) error {
 				fmt.Printf("%s: license violation: %s\n", project.Name, project.License)
 			}
 		}
+
+		os.Exit(2)
 
 		return nil
 	}
