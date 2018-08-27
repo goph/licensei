@@ -20,6 +20,8 @@ func init() {
 }
 
 func initConfig() {
+	viper.AutomaticEnv()
+
 	if config != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(config)

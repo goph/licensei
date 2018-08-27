@@ -1,12 +1,13 @@
 package licensei
 
-type Project struct {
+type Dependency struct {
 	Name       string  `toml:"name"`
 	Revision   string  `toml:"revision"`
 	License    string  `toml:"license"`
 	Confidence float32 `toml:"confidence"`
+	Type       string  `toml:"type"`
 }
 
-type projectSource interface {
-	Projects() ([]Project, error)
+type dependencySource interface {
+	Dependencies() ([]Dependency, error)
 }

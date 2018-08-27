@@ -10,11 +10,11 @@ import (
 
 // ListViewModel holds information for a list view.
 type ListViewModel struct {
-	Projects []ListProjectItem `json:"projects"`
+	Dependencies []ListDependencyItem `json:"dependencies"`
 }
 
-// ListProjectItem represents an item in the list view.
-type ListProjectItem struct {
+// ListDependencyItem represents an item in the list view.
+type ListDependencyItem struct {
 	Name       string  `json:"name"`
 	License    string  `json:"license"`
 	Confidence float32 `json:"confidence"`
@@ -54,14 +54,14 @@ func (v *tableListView) Render(model ListViewModel) error {
 	table := tablewriter.NewWriter(v.output)
 	table.SetHeader([]string{"Package", "License", "Confidence"})
 
-	for _, project := range model.Projects {
-		if project.License == "" {
-			table.Append([]string{project.Name, "no license file was found", ""})
+	for _, dep := range model.Dependencies {
+		if dep.License == "" {
+			table.Append([]string{dep.Name, "no license file was found", ""})
 
 			continue
 		}
 
-		table.Append([]string{project.Name, project.License, fmt.Sprintf("%d%%", int(project.Confidence*100))})
+		table.Append([]string{dep.Name, dep.License, fmt.Sprintf("%d%%", int(dep.Confidence*100))})
 	}
 
 	table.Render()

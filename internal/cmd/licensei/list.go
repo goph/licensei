@@ -3,17 +3,16 @@ package licensei
 import (
 	"errors"
 	"os"
-	"strings"
 
 	"github.com/goph/licensei/internal/licensei"
-	"github.com/goph/licensei/pkg/detector/github"
-	"github.com/goph/licensei/pkg/detector/sourced"
-	"github.com/goph/licensei/pkg/licensematch"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 type listOptions struct {
 	format string
+
+	githubToken string
 }
 
 type listView interface {
@@ -27,6 +26,8 @@ func NewListCommand() *cobra.Command {
 		Use:   "list [OPTIONS]",
 		Short: "List licenses of dependencies in the project",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			options.githubToken = viper.GetString("github_token")
+
 			return runList(options)
 		},
 	}
@@ -50,68 +51,28 @@ func runList(options listOptions) error {
 		return errors.New("unsupported format: " + options.format)
 	}
 
-	source := licensei.NewCacheProjectSource(licensei.NewDepProjectSource())
-	projects, err := source.Projects()
+	source := licensei.NewCacheProjectSource(licensei.NewDepDependencySource())
+	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err
 	}
 
-	var detector interface {
-		Detect() (map[string]float32, error)
+	detector := licensei.NewLicenseDetector(options.githubToken)
+
+	dependencies, err = detector.Detect(dependencies)
+	if err != nil {
+		return err
 	}
 
 	var viewModel licensei.ListViewModel
 
-	for _, project := range projects {
-		if project.License != "" {
-			viewModel.Projects = append(
-				viewModel.Projects,
-				licensei.ListProjectItem{
-					Name:       project.Name,
-					License:    project.License,
-					Confidence: project.Confidence,
-				},
-			)
-
-			continue
-		}
-
-		f, err := sourced.FilerFromDirectory("vendor/" + project.Name)
-		if err != nil {
-			panic(err)
-		}
-		detector = sourced.NewDetector(f)
-
-		matches, err := detector.Detect()
-		if err != nil {
-			viewModel.Projects = append(
-				viewModel.Projects,
-				licensei.ListProjectItem{
-					Name: project.Name,
-				},
-			)
-
-			continue
-		}
-
-		if strings.HasPrefix(project.Name, "github.com") {
-			repoData := strings.Split(project.Name, "/")
-			detector = github.NewDetector(repoData[1], repoData[2])
-
-			m, err := detector.Detect()
-			if err == nil {
-				matches = licensematch.Merge(matches, m)
-			}
-		}
-
-		license, confidence := licensematch.Best(matches)
-
-		viewModel.Projects = append(
-			viewModel.Projects,
-			licensei.ListProjectItem{
-				Name:       project.Name,
-				License:    license,
-				Confidence: confidence,
+	for _, dep := range dependencies {
+		viewModel.Dependencies = append(
+			viewModel.Dependencies,
+			licensei.ListDependencyItem{
+				Name:       dep.Name,
+				License:    dep.License,
+				Confidence: dep.Confidence,
 			},
 		)
 	}

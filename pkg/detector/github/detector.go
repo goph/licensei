@@ -2,12 +2,30 @@ package github
 
 import (
 	"context"
-	"os"
+	"net/http"
 
 	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
-	"golang.org/x/oauth2"
 )
+
+// DetectorOption configures the detector.
+type DetectorOption interface {
+	apply(d *detector)
+}
+
+// DetectorOptionFunc makes a function a detector option when it's definition is compatible.
+type DetectorOptionFunc func(d *detector)
+
+func (fn DetectorOptionFunc) apply(d *detector) {
+	fn(d)
+}
+
+// Client configures a Github client.
+func Client(c *github.Client) DetectorOption {
+	return DetectorOptionFunc(func(d *detector) {
+		d.client = c
+	})
+}
 
 type detector struct {
 	owner string
@@ -16,17 +34,19 @@ type detector struct {
 	client *github.Client
 }
 
-func NewDetector(owner string, repo string) *detector {
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-
+func NewDetector(owner string, repo string, opts ...DetectorOption) *detector {
 	d := &detector{
-		owner:  owner,
-		repo:   repo,
-		client: github.NewClient(tc),
+		owner: owner,
+		repo:  repo,
+	}
+
+	for _, opt := range opts {
+		opt.apply(d)
+	}
+
+	// Default Github client
+	if d.client == nil {
+		d.client = github.NewClient(http.DefaultClient)
 	}
 
 	return d

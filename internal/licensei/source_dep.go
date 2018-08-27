@@ -4,32 +4,37 @@ import (
 	"os"
 
 	"github.com/goph/licensei/pkg/pkgutil/gopkg"
+	"github.com/pkg/errors"
 )
 
-type depProjectSource struct {
+type depDependencySource struct {
 }
 
-func NewDepProjectSource() *depProjectSource {
-	return new(depProjectSource)
+func NewDepDependencySource() *depDependencySource {
+	return new(depDependencySource)
 }
 
-func (s *depProjectSource) Projects() ([]Project, error) {
+func (s *depDependencySource) Dependencies() ([]Dependency, error) {
 	lockFile, err := os.Open("Gopkg.lock")
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not open dep lock file")
 	}
 
-	locked, err := gopkg.ReadLock(lockFile)
+	lock, err := gopkg.ReadLock(lockFile)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not read dep lock file")
+	}
 
-	var packages []Project
+	var dependencies []Dependency
 
-	for _, project := range locked.Projects {
-		pkg := Project{
+	for _, project := range lock.Projects {
+		pkg := Dependency{
 			Name:     project.Name,
 			Revision: project.Revision,
+			Type:     "dep",
 		}
-		packages = append(packages, pkg)
+		dependencies = append(dependencies, pkg)
 	}
 
-	return packages, nil
+	return dependencies, nil
 }

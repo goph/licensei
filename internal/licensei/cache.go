@@ -9,55 +9,55 @@ import (
 	"github.com/pkg/errors"
 )
 
-type LicenseCache struct {
-	Projects []Project `toml:"projects"`
+type licenseCache struct {
+	Dependencies []Dependency `toml:"dependencies"`
 }
 
 // ReadCache reads the cache from file.
-func ReadCache(r io.Reader) (*LicenseCache, error) {
+func ReadCache(r io.Reader) ([]Dependency, error) {
 	buf := &bytes.Buffer{}
 	_, err := buf.ReadFrom(r)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to read byte stream")
 	}
 
-	cache := new(LicenseCache)
+	cache := new(licenseCache)
 	err = toml.Unmarshal(buf.Bytes(), cache)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to parse the cache as TOML")
 	}
 
-	return cache, nil
+	return cache.Dependencies, nil
 }
 
 // WriteCache writes the generated cache to file.
-func WriteCache(w io.Writer, cache LicenseCache) error {
+func WriteCache(w io.Writer, dependencies []Dependency) error {
 	encoder := toml.NewEncoder(w).ArraysWithOneElementPerLine(true)
 
-	return encoder.Encode(cache)
+	return encoder.Encode(licenseCache{Dependencies: dependencies})
 }
 
-type cacheProjectSource struct {
-	delegatedProjectSource projectSource
+type cacheDependencySource struct {
+	delegatedDependencySource dependencySource
 }
 
-func NewCacheProjectSource(delegatedProjectSource projectSource) *cacheProjectSource {
-	return &cacheProjectSource{
-		delegatedProjectSource: delegatedProjectSource,
+func NewCacheProjectSource(delegatedDependencySource dependencySource) *cacheDependencySource {
+	return &cacheDependencySource{
+		delegatedDependencySource: delegatedDependencySource,
 	}
 }
 
-func (s *cacheProjectSource) Projects() ([]Project, error) {
-	var projects []Project
+func (s *cacheDependencySource) Dependencies() ([]Dependency, error) {
+	var cachedDependencies []Dependency
 
 	cacheFile, err := os.Open(".licensei.cache")
 	if err == nil {
-		cache, err := ReadCache(cacheFile)
+		p, err := ReadCache(cacheFile)
 		if err != nil {
-			return nil, err
+			return nil, errors.WithMessage(err, "could not parse cache")
 		}
 
-		projects = cache.Projects
+		cachedDependencies = p
 	} else if !os.IsNotExist(err) {
 		// cache could not be loaded
 		// at least log it dude
@@ -66,32 +66,36 @@ func (s *cacheProjectSource) Projects() ([]Project, error) {
 
 	cacheFile.Close()
 
-	projectIndex := make(map[string]int, len(projects))
+	dependencyIndex := make(map[string]int, len(cachedDependencies))
 
-	for key, project := range projects {
-		projectIndex[project.Name] = key
+	for key, project := range cachedDependencies {
+		dependencyIndex[project.Name] = key
 	}
 
-	pkgs, err := s.delegatedProjectSource.Projects()
+	dependencies, err := s.delegatedDependencySource.Dependencies()
 	if err != nil {
 		return nil, err
 	}
 
-	for _, pkg := range pkgs {
-		projectKey, ok := projectIndex[pkg.Name]
-		if !ok {
-			projects = append(
-				projects,
-				Project{
-					Name:     pkg.Name,
-					Revision: pkg.Revision,
-				},
-			)
+	for _, dep := range dependencies {
+		projectKey, ok := dependencyIndex[dep.Name]
 
-			projectKey = len(projects) - 1
-			projectIndex[pkg.Name] = projectKey
+		if !ok {
+			cachedDependencies = append(cachedDependencies, dep)
+
+			projectKey = len(cachedDependencies) - 1
+			dependencyIndex[dep.Name] = projectKey
+		} else {
+			// Forward compatibility
+			cachedDependencies[projectKey].Type = dep.Type
+
+			// Dependency got updated, so dump cached values
+			if cachedDependencies[projectKey].Revision != dep.Revision {
+				cachedDependencies[projectKey].License = ""
+				cachedDependencies[projectKey].Confidence = 0
+			}
 		}
 	}
 
-	return projects, nil
+	return cachedDependencies, nil
 }

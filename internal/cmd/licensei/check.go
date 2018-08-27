@@ -11,6 +11,9 @@ import (
 
 type checkOptions struct {
 	approved []string
+	ignored  []string
+
+	githubToken string
 }
 
 func NewCheckCommand() *cobra.Command {
@@ -21,6 +24,9 @@ func NewCheckCommand() *cobra.Command {
 		Short: "Check licenses of dependencies in the project",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			options.approved = viper.GetStringSlice("approved")
+			options.ignored = viper.GetStringSlice("ignored")
+
+			options.githubToken = viper.GetString("github_token")
 
 			return runCheck(options)
 		},
@@ -35,23 +41,36 @@ func runCheck(options checkOptions) error {
 		return nil
 	}
 
-	source := licensei.NewCacheProjectSource(licensei.NewDepProjectSource())
-	projects, err := source.Projects()
+	source := licensei.NewCacheProjectSource(licensei.NewDepDependencySource())
+	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err
 	}
 
-	var violations []licensei.Project
+	detector := licensei.NewLicenseDetector(options.githubToken)
 
-	for _, project := range projects {
+	dependencies, err = detector.Detect(dependencies)
+	if err != nil {
+		return err
+	}
+
+	var violations []licensei.Dependency
+
+	ignored := make(map[string]bool, len(options.ignored))
+
+	for _, name := range options.ignored {
+		ignored[name] = true
+	}
+
+	for _, dep := range dependencies {
 		var approved bool
 
 		for _, license := range options.approved {
-			approved = approved || strings.ToLower(license) == strings.ToLower(project.License)
+			approved = approved || strings.ToLower(license) == strings.ToLower(dep.License)
 		}
 
-		if !approved {
-			violations = append(violations, project)
+		if _, ignore := ignored[dep.Name]; !approved && !ignore {
+			violations = append(violations, dep)
 		}
 	}
 

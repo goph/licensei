@@ -2,17 +2,16 @@ package licensei
 
 import (
 	"os"
-	"strings"
 
 	"github.com/goph/licensei/internal/licensei"
-	"github.com/goph/licensei/pkg/detector/github"
-	"github.com/goph/licensei/pkg/detector/sourced"
-	"github.com/goph/licensei/pkg/licensematch"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 type cacheOptions struct {
 	update bool
+
+	githubToken string
 }
 
 func NewCacheCommand() *cobra.Command {
@@ -22,6 +21,8 @@ func NewCacheCommand() *cobra.Command {
 		Use:   "cache [OPTIONS]",
 		Short: "Cache licenses of dependencies in the project",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			options.githubToken = viper.GetString("github_token")
+
 			return runCache(options)
 		},
 	}
@@ -33,46 +34,26 @@ func NewCacheCommand() *cobra.Command {
 	return cmd
 }
 func runCache(options cacheOptions) error {
-	source := licensei.NewCacheProjectSource(licensei.NewDepProjectSource())
-	projects, err := source.Projects()
+	var dependencies []licensei.Dependency
+	var err error
+
+	// Invalidate cache data
+	if options.update {
+		source := licensei.NewDepDependencySource()
+		dependencies, err = source.Dependencies()
+	} else {
+		source := licensei.NewCacheProjectSource(licensei.NewDepDependencySource())
+		dependencies, err = source.Dependencies()
+	}
 	if err != nil {
 		return err
 	}
 
-	var detector interface {
-		Detect() (map[string]float32, error)
-	}
+	detector := licensei.NewLicenseDetector(options.githubToken)
 
-	for key, project := range projects {
-		if project.License != "" {
-			continue
-		}
-
-		f, err := sourced.FilerFromDirectory("vendor/" + project.Name)
-		if err != nil {
-			panic(err)
-		}
-		detector = sourced.NewDetector(f)
-
-		matches, err := detector.Detect()
-		if err != nil {
-			continue
-		}
-
-		if strings.HasPrefix(project.Name, "github.com") {
-			repoData := strings.Split(project.Name, "/")
-			detector = github.NewDetector(repoData[1], repoData[2])
-
-			m, err := detector.Detect()
-			if err == nil {
-				matches = licensematch.Merge(matches, m)
-			}
-		}
-
-		license, confidence := licensematch.Best(matches)
-
-		projects[key].License = license
-		projects[key].Confidence = confidence
+	dependencies, err = detector.Detect(dependencies)
+	if err != nil {
+		return err
 	}
 
 	cacheFile, err := os.Create(".licensei.cache")
@@ -81,7 +62,7 @@ func runCache(options cacheOptions) error {
 	}
 	defer cacheFile.Close()
 
-	licensei.WriteCache(cacheFile, licensei.LicenseCache{Projects: projects})
+	licensei.WriteCache(cacheFile, dependencies)
 
 	return nil
 }

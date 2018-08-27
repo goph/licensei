@@ -14,7 +14,7 @@ func TestJsonListView_Render(t *testing.T) {
 	view := NewJsonListView(buf)
 
 	model := ListViewModel{
-		Projects: []ListProjectItem{
+		Dependencies: []ListDependencyItem{
 			{
 				Name:       "test",
 				License:    "MIT",
@@ -44,7 +44,7 @@ func TestTableListView_Render(t *testing.T) {
 	view := NewTableListView(buf)
 
 	model := ListViewModel{
-		Projects: []ListProjectItem{
+		Dependencies: []ListDependencyItem{
 			{
 				Name:       "test",
 				License:    "MIT",
