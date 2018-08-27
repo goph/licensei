@@ -4,7 +4,7 @@ DEP_VERSION = 0.5.0
 GOLANGCI_VERSION = 1.9.3
 
 .PHONY: setup
-setup:: dep ## Setup the project for development
+setup:: vendor ## Setup the project for development
 
 bin/dep: ## Install dep
 	@mkdir -p ./bin/
