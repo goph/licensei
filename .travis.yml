@@ -20,7 +20,7 @@ matrix:
 
 install: make vendor
 
-script: make test
+script: make test && echo $TRAVIS_GO_VERSION
 
 deploy:
     provider: script
