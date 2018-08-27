@@ -25,3 +25,7 @@
 [[constraint]]
   name = "github.com/spf13/viper"
   version = "1.1.0"
+
+[[constraint]]
+  name = "github.com/goph/emperror"
+  version = "0.10.0"

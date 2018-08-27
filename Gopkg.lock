@@ -65,6 +65,14 @@
   revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
 
 [[projects]]
+  digest = "1:8523d8f3c13bc967329a8ed755835abcb7d28406bdb76e68be1e8c90a4f21864"
+  name = "github.com/goph/emperror"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d0cf866937858b332543e8b9f6d3bda194f9b860"
+  version = "v0.10.0"
+
+[[projects]]
   digest = "1:c0d19ab64b32ce9fe5cf4ddceba78d5bc9807f0016db6b1183599da3dcc24d10"
   name = "github.com/hashicorp/hcl"
   packages = [
@@ -562,6 +570,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/google/go-github/github",
+    "github.com/goph/emperror",
     "github.com/olekukonko/tablewriter",
     "github.com/pelletier/go-toml",
     "github.com/pkg/errors",
