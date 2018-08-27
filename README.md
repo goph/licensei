@@ -1,6 +1,6 @@
 # Licensei
 
-[![Build Status](https://img.shields.io/travis/goph/licensei.svg?style=flat-square)](https://travis-ci.org/goph/licensei)
+[![Build Status](https://travis-ci.com/goph/licensei.svg?branch=master)](https://travis-ci.com/goph/licensei)
 [![Go Report Card](https://goreportcard.com/badge/github.com/goph/licensei?style=flat-square)](https://goreportcard.com/report/github.com/goph/licensei)
 [![GolangCI](https://golangci.com/badges/github.com/goph/licensei.svg)](https://golangci.com)
 [![GoDoc](http://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](https://godoc.org/github.com/goph/licensei)
