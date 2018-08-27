@@ -10,8 +10,8 @@ bin/dep: ## Install dep
 	@mkdir -p ./bin/
 	@curl https://raw.githubusercontent.com/golang/dep/master/install.sh | INSTALL_DIRECTORY=./bin DEP_RELEASE_TAG=v${DEP_VERSION} sh
 
-.PHONY: dep
-dep: bin/dep ## Install dependencies
+.PHONY: vendor
+vendor: bin/dep ## Install dependencies
 	@bin/dep ensure
 
 .PHONY: clean

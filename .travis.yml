@@ -20,7 +20,7 @@ matrix:
     allow_failures:
         - go: tip
 
-install: make dep
+install: make vendor
 
 script: make test
 
