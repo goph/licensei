@@ -21,13 +21,9 @@ clean:: ## Clean the working area
 .PHONY: check
 check:: test lint ## Run tests and linters
 
-PASS=$(shell printf "\033[32mPASS\033[0m")
-FAIL=$(shell printf "\033[31mFAIL\033[0m")
-COLORIZE=sed ''/PASS/s//${PASS}/'' | sed ''/FAIL/s//${FAIL}/''
-
 .PHONY: test
 test: ## Run unit tests
-	@go test -tags '${TAGS}' ${ARGS} ./... | ${COLORIZE}
+	@go test ${ARGS} ./...
 
 bin/golangci-lint: ## Install golangci linter
 	@mkdir -p ./bin/
