@@ -11,3 +11,13 @@ type Dependency struct {
 type dependencySource interface {
 	Dependencies() ([]Dependency, error)
 }
+
+func indexDependencies(dependencies []Dependency) map[string]int {
+	index := make(map[string]int, len(dependencies))
+
+	for key, dep := range dependencies {
+		index[dep.Name] = key
+	}
+
+	return index
+}
