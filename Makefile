@@ -5,7 +5,7 @@ GOLANGCI_VERSION = 1.9.3
 GORELEASER_VERSION = 0.84.0
 
 .PHONY: setup
-setup:: vendor ## Setup the project for development
+setup: vendor ## Setup the project for development
 
 bin/dep: ## Install dep
 	@mkdir -p ./bin/
