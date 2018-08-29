@@ -2,6 +2,7 @@
 
 DEP_VERSION = 0.5.0
 GOLANGCI_VERSION = 1.9.3
+GORELEASER_VERSION = 0.84.0
 
 .PHONY: setup
 setup:: vendor ## Setup the project for development
@@ -15,23 +16,31 @@ vendor: bin/dep ## Install dependencies
 	@bin/dep ensure -vendor-only
 
 .PHONY: clean
-clean:: ## Clean the working area
+clean: ## Clean the working area
 	rm -rf bin/ build/ vendor/
 
 .PHONY: check
-check:: test lint ## Run tests and linters
+check: test lint ## Run tests and linters
 
 .PHONY: test
-test: ## Run unit tests
-	@go test ${ARGS} ./...
+test: ## Run tests
+	go test ${ARGS} ./...
 
 bin/golangci-lint: ## Install golangci linter
 	@mkdir -p ./bin/
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ./bin/ v${GOLANGCI_VERSION}
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- v${GOLANGCI_VERSION}
 
 .PHONY: lint
 lint: bin/golangci-lint ## Run linter
 	@bin/golangci-lint run
+
+bin/goreleaser: ## Install goreleaser
+	@mkdir -p ./bin/
+	curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | bash -s -- v${GORELEASER_VERSION}
+
+.PHONY: release
+release: bin/goreleaser ## Release current tag
+	@bin/goreleaser
 
 .PHONY: help
 .DEFAULT_GOAL := help
