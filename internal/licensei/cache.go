@@ -66,36 +66,28 @@ func (s *cacheDependencySource) Dependencies() ([]Dependency, error) {
 
 	cacheFile.Close()
 
-	dependencyIndex := make(map[string]int, len(cachedDependencies))
-
-	for key, project := range cachedDependencies {
-		dependencyIndex[project.Name] = key
-	}
-
-	dependencies, err := s.delegatedDependencySource.Dependencies()
+	sourceDependencies, err := s.delegatedDependencySource.Dependencies()
 	if err != nil {
 		return nil, err
 	}
 
-	for _, dep := range dependencies {
-		projectKey, ok := dependencyIndex[dep.Name]
+	cachedDependencyIndex := indexDependencies(cachedDependencies)
 
-		if !ok {
-			cachedDependencies = append(cachedDependencies, dep)
+	var dependencies []Dependency
 
-			projectKey = len(cachedDependencies) - 1
-			dependencyIndex[dep.Name] = projectKey
-		} else {
-			// Forward compatibility
-			cachedDependencies[projectKey].Type = dep.Type
+	for _, dep := range sourceDependencies {
+		cacheIndex, ok := cachedDependencyIndex[dep.Name]
 
-			// Dependency got updated, so dump cached values
-			if cachedDependencies[projectKey].Revision != dep.Revision {
-				cachedDependencies[projectKey].License = ""
-				cachedDependencies[projectKey].Confidence = 0
+		if ok {
+			// Same revision, so license and confidence information is valid
+			if cachedDependencies[cacheIndex].Revision == dep.Revision {
+				dep.License = cachedDependencies[cacheIndex].License
+				dep.Confidence = cachedDependencies[cacheIndex].Confidence
 			}
 		}
+
+		dependencies = append(dependencies, dep)
 	}
 
-	return cachedDependencies, nil
+	return dependencies, nil
 }
