@@ -29,6 +29,8 @@ func TestCorrectnessFilter(t *testing.T) {
 	}
 
 	for name, test := range tests {
+		name, test := name, test
+
 		t.Run(name, func(t *testing.T) {
 			got := CorrectnessFilter(test.file)
 
@@ -61,6 +63,8 @@ func TestDirFilter(t *testing.T) {
 	}
 
 	for name, test := range tests {
+		name, test := name, test
+
 		t.Run(name, func(t *testing.T) {
 			got := DirFilter(test.file)
 

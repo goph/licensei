@@ -25,7 +25,7 @@ func NewListCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [OPTIONS]",
 		Short: "List licenses of dependencies in the project",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			options.githubToken = viper.GetString("github_token")
 
 			return runList(options)

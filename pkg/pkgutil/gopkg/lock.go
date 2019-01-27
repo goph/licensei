@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/pelletier/go-toml"
+	toml "github.com/pelletier/go-toml"
 	"github.com/pkg/errors"
 )
 

@@ -123,6 +123,8 @@ func TestFilterFiler(t *testing.T) {
 	}
 
 	for name, test := range tests {
+		name, test := name, test
+
 		t.Run(name, func(t *testing.T) {
 			f := NewFilterFiler(test.filer, test.filter)
 

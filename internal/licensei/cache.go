@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/pelletier/go-toml"
+	toml "github.com/pelletier/go-toml"
 	"github.com/pkg/errors"
 )
 
@@ -64,7 +64,7 @@ func (s *cacheDependencySource) Dependencies() ([]Dependency, error) {
 		return nil, err
 	}
 
-	cacheFile.Close()
+	_ = cacheFile.Close()
 
 	sourceDependencies, err := s.delegatedDependencySource.Dependencies()
 	if err != nil {
@@ -73,6 +73,8 @@ func (s *cacheDependencySource) Dependencies() ([]Dependency, error) {
 
 	cachedDependencyIndex := indexDependencies(cachedDependencies)
 
+	// We don't know the exact size upfront, we could only estimate a maximum size
+	// nolint: prealloc
 	var dependencies []Dependency
 
 	for _, dep := range sourceDependencies {

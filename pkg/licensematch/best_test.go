@@ -34,6 +34,8 @@ func TestBest(t *testing.T) {
 	}
 
 	for name, test := range tests {
+		name, test := name, test
+
 		t.Run(name, func(t *testing.T) {
 			license, confidence := Best(test.licenses)
 
@@ -80,6 +82,8 @@ func TestBestAll(t *testing.T) {
 	}
 
 	for name, test := range tests {
+		name, test := name, test
+
 		t.Run(name, func(t *testing.T) {
 			bests, confidence := Bests(test.licenses)
 
