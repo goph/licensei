@@ -10,5 +10,9 @@ builds:
             - amd64
 archive:
     name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+
+changelog:
+    skip: true
+
 checksum:
   name_template: 'checksums.txt'
