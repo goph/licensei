@@ -23,7 +23,7 @@ func NewCheckCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "check [OPTIONS]",
 		Short: "Check licenses of dependencies in the project",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			options.approved = viper.GetStringSlice("approved")
 			options.ignored = viper.GetStringSlice("ignored")
 
@@ -67,7 +67,7 @@ func runCheck(options checkOptions) error {
 		var approved bool
 
 		for _, license := range options.approved {
-			approved = approved || strings.ToLower(license) == strings.ToLower(dep.License)
+			approved = approved || strings.EqualFold(license, dep.License)
 		}
 
 		if _, ignore := ignored[dep.Name]; !approved && !ignore {

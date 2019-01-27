@@ -9,8 +9,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+// nolint: gochecknoglobals
 var config string
 
+// nolint: gochecknoinits
 func init() {
 	cobra.OnInitialize(initConfig)
 
@@ -36,6 +38,7 @@ func initConfig() {
 	}
 }
 
+// nolint: gochecknoglobals
 var rootCmd = &cobra.Command{
 	Use:   "licensei",
 	Short: "License master",

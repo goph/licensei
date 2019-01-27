@@ -9,6 +9,7 @@ import (
 	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
 )
 
+// nolint: gochecknoglobals
 var licenseDocsRe = regexp.MustCompile(fmt.Sprintf("^(|.*[-_. ])(%s)(\\.docs?.*)$", "li[cs]en[cs]e(s?)"))
 
 // CorrectnessFilter does some corrections based on known issues (like detecting multiple licenses).

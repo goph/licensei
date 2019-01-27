@@ -20,7 +20,7 @@ func NewCacheCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "cache [OPTIONS]",
 		Short: "Cache licenses of dependencies in the project",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			options.githubToken = viper.GetString("github_token")
 
 			return runCache(options)

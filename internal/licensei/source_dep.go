@@ -25,7 +25,7 @@ func (s *depDependencySource) Dependencies() ([]Dependency, error) {
 		return nil, errors.Wrap(err, "could not read dep lock file")
 	}
 
-	var dependencies []Dependency
+	dependencies := make([]Dependency, len(lock.Projects))
 
 	for _, project := range lock.Projects {
 		pkg := Dependency{

@@ -40,6 +40,8 @@ func TestReadLock(t *testing.T) {
 	}
 
 	for file, want := range tests {
+		file, want := file, want
+
 		t.Run(file, func(t *testing.T) {
 			lockFile, err := os.Open(file)
 			if err != nil {
