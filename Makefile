@@ -2,6 +2,11 @@
 
 OS = $(shell uname)
 
+# Project variables
+PACKAGE = github.com/goph/licensei
+BUILD_PACKAGE ?= ${PACKAGE}/cmd/licensei
+BINARY_NAME ?= licensei
+
 # Build variables
 BUILD_DIR ?= build
 VERSION ?= $(shell git describe --tags --exact-match 2>/dev/null || git symbolic-ref -q --short HEAD)
@@ -35,9 +40,24 @@ bin/dep-${DEP_VERSION}:
 vendor: bin/dep ## Install dependencies
 	@bin/dep ensure -vendor-only
 
+.PHONY: clear
+clear: ## Clear the working area and the project
+	rm -rf bin/ vendor/
+
 .PHONY: clean
-clean: ## Clean the working area
-	rm -rf bin/ build/ vendor/
+clean: ## Clean builds
+	rm -rf ${BUILD_DIR}/
+
+.PHONY: build
+build: ## Build a binary
+ifeq (${VERBOSE}, 1)
+	go env
+endif
+ifneq (${IGNORE_GOLANG_VERSION_REQ}, 1)
+	@printf "${GOLANG_VERSION}\n$$(go version | awk '{sub(/^go/, "", $$3);print $$3}')" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -g | head -1 | grep -q -E "^${GOLANG_VERSION}$$" || (printf "Required Go version is ${GOLANG_VERSION}\nInstalled: `go version`" && exit 1)
+endif
+
+	go build ${GOARGS} -tags "${GOTAGS}" -ldflags "${LDFLAGS}" -o ${BUILD_DIR}/${BINARY_NAME} ${BUILD_PACKAGE}
 
 .PHONY: check
 check: test lint ## Run tests and linters
