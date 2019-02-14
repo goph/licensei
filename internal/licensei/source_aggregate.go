@@ -20,11 +20,15 @@ func NewAggregatedDependencySource() *aggregatedDependencySource {
 		source.dependencySources = append(source.dependencySources, NewDepDependencySource())
 	}
 
+	if pkgmgrs.GoMod {
+		source.dependencySources = append(source.dependencySources, NewGoModDependencySource())
+	}
+
 	return source
 }
 
 func (s *aggregatedDependencySource) Dependencies() ([]Dependency, error) {
-	var deps []Dependency
+	var deps []Dependency // nolint: prealloc
 
 	for _, depSource := range s.dependencySources {
 		sdeps, err := depSource.Dependencies()
@@ -32,9 +36,8 @@ func (s *aggregatedDependencySource) Dependencies() ([]Dependency, error) {
 			return nil, err
 		}
 
-		for _, dep := range sdeps {
-			deps = append(deps, dep)
-		}
+		deps = append(deps, sdeps...)
+
 	}
 
 	return deps, nil
