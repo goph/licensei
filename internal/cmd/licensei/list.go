@@ -51,7 +51,7 @@ func runList(options listOptions) error {
 		return errors.New("unsupported format: " + options.format)
 	}
 
-	source := licensei.NewCacheProjectSource(licensei.NewDepDependencySource())
+	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource())
 	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err
