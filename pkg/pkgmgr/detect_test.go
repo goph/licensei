@@ -1,10 +1,8 @@
-package pkgutil_test
+package pkgmgr
 
 import (
 	"reflect"
 	"testing"
-
-	. "github.com/goph/licensei/pkg/pkgutil"
 )
 
 func TestDetectPackageManagers(t *testing.T) {

@@ -1,13 +1,15 @@
 package licensei
 
-import "github.com/goph/licensei/pkg/pkgutil"
+import (
+	"github.com/goph/licensei/pkg/pkgmgr"
+)
 
 type aggregatedDependencySource struct {
 	dependencySources []dependencySource
 }
 
 func NewAggregatedDependencySource() *aggregatedDependencySource {
-	pkgmgrs, err := pkgutil.DetectPackageManagers(".")
+	pkgmgrs, err := pkgmgr.DetectPackageManagers(".")
 	if err != nil {
 		panic(err)
 	}

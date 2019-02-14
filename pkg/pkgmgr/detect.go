@@ -1,4 +1,4 @@
-package pkgutil
+package pkgmgr
 
 import (
 	"io/ioutil"

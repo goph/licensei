@@ -1,11 +1,9 @@
-package gopkg_test
+package gopkg
 
 import (
 	"os"
 	"reflect"
 	"testing"
-
-	. "github.com/goph/licensei/pkg/pkgutil/gopkg"
 )
 
 func TestReadLock(t *testing.T) {

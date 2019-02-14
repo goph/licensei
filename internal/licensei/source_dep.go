@@ -3,7 +3,7 @@ package licensei
 import (
 	"os"
 
-	"github.com/goph/licensei/pkg/pkgutil/gopkg"
+	"github.com/goph/licensei/pkg/pkgmgr/gopkg"
 	"github.com/pkg/errors"
 )
 
