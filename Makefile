@@ -21,28 +21,13 @@ endif
 TEST_FORMAT = short-verbose
 endif
 
-DEP_VERSION = 0.5.0
 GOTESTSUM_VERSION = 0.3.2
 GOLANGCI_VERSION = 1.13.2
 GORELEASER_VERSION = 0.98.0
 
-.PHONY: setup
-setup: vendor ## Setup the project for development
-
-bin/dep: bin/dep-${DEP_VERSION}
-	@ln -sf dep-${DEP_VERSION} bin/dep
-bin/dep-${DEP_VERSION}:
-	@mkdir -p bin
-	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | INSTALL_DIRECTORY=bin DEP_RELEASE_TAG=v${DEP_VERSION} sh
-	@mv bin/dep $@
-
-.PHONY: vendor
-vendor: bin/dep ## Install dependencies
-	@bin/dep ensure -vendor-only
-
 .PHONY: clear
 clear: ## Clear the working area and the project
-	rm -rf bin/ vendor/
+	rm -rf bin/
 
 .PHONY: clean
 clean: ## Clean builds

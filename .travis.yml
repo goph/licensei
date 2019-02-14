@@ -3,7 +3,6 @@ language: go
 sudo: false
 
 go:
-    - 1.10.x
     - 1.11.x
     - tip
 
@@ -12,12 +11,21 @@ branches:
         - master
         - /^v?\d+\.\d+\.\d+(-\S*)?$/
 
+env:
+    global:
+        - GO111MODULE=on
+
 matrix:
     fast_finish: true
     allow_failures:
         - go: tip
 
-install: make vendor
+cache:
+    directories:
+        - bin
+        - $HOME/gopath/pkg/mod
+
+install: go mod download
 
 script: make test
 
