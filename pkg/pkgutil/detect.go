@@ -7,7 +7,8 @@ import (
 )
 
 type PackageManagers struct {
-	Dep bool
+	Dep   bool
+	GoMod bool
 }
 
 func (p *PackageManagers) String() string {
@@ -15,6 +16,10 @@ func (p *PackageManagers) String() string {
 
 	if p.Dep {
 		pkgmgrs = append(pkgmgrs, "dep")
+	}
+
+	if p.GoMod {
+		pkgmgrs = append(pkgmgrs, "gomod")
 	}
 
 	return strings.Join(pkgmgrs, ", ")
@@ -42,6 +47,11 @@ func DetectPackageManagers(path string) (*PackageManagers, error) {
 		// Dep
 		if file.Name() == "Gopkg.lock" {
 			pkgmgrs.Dep = true
+		}
+
+		// Go modules
+		if file.Name() == "go.mod" {
+			pkgmgrs.GoMod = true
 		}
 	}
 

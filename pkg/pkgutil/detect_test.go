@@ -12,6 +12,9 @@ func TestDetectPackageManagers(t *testing.T) {
 		"dep": {
 			Dep: true,
 		},
+		"gomod": {
+			GoMod: true,
+		},
 	}
 
 	for name, test := range tests {
