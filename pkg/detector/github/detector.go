@@ -62,7 +62,7 @@ func (d *detector) DetectContext(ctx context.Context) (map[string]float32, error
 		return nil, err
 	}
 
-	if lic.License.SPDXID != nil {
+	if lic.License.SPDXID != nil && *lic.License.SPDXID != "NOASSERTION" {
 		return map[string]float32{*(lic.License.SPDXID): 1}, nil
 	}
 
