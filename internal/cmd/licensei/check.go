@@ -42,7 +42,7 @@ func runCheck(options checkOptions) error {
 		return nil
 	}
 
-	source := licensei.NewCacheProjectSource(licensei.NewDepDependencySource())
+	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource())
 	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err

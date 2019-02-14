@@ -2,6 +2,7 @@ package licensei
 
 import (
 	"context"
+	"os"
 	"strings"
 
 	"github.com/google/go-github/github"
@@ -44,18 +45,23 @@ func (d *LicenseDetector) Detect(dependencies []Dependency) ([]Dependency, error
 			continue
 		}
 
-		f, err := sourced.FilerFromDirectory("vendor/" + dep.Name)
-		if err != nil {
-			return nil, emperror.With(
-				errors.Wrap(err, "could not initialize license detector"),
-				"dependency", dep.Name,
-			)
-		}
-		detector = sourced.NewDetector(f)
+		var matches map[string]float32
 
-		matches, err := detector.Detect()
-		if err != nil { // TODO: add error handling
-			continue
+		_, err := os.Stat("vendor")
+		if !os.IsNotExist(err) {
+			f, err := sourced.FilerFromDirectory("vendor/" + dep.Name)
+			if err != nil {
+				return nil, emperror.With(
+					errors.Wrap(err, "could not initialize license detector"),
+					"dependency", dep.Name,
+				)
+			}
+			detector = sourced.NewDetector(f)
+
+			matches, err = detector.Detect()
+			if err != nil { // TODO: add error handling
+				continue
+			}
 		}
 
 		if strings.HasPrefix(dep.Name, "github.com") {
