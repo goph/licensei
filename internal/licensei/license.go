@@ -10,6 +10,7 @@ import (
 	githubdetector "github.com/goph/licensei/pkg/detector/github"
 	"github.com/goph/licensei/pkg/detector/sourced"
 	"github.com/goph/licensei/pkg/licensematch"
+	"github.com/goph/licensei/pkg/resolver"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 )
@@ -64,8 +65,10 @@ func (d *LicenseDetector) Detect(dependencies []Dependency) ([]Dependency, error
 			}
 		}
 
-		if strings.HasPrefix(dep.Name, "github.com") {
-			repoData := strings.Split(dep.Name, "/")
+		name := resolver.Resolve(dep.Name)
+
+		if strings.HasPrefix(name, "github.com") {
+			repoData := strings.Split(name, "/")
 			detector = githubdetector.NewDetector(repoData[1], repoData[2], d.githubDetectorOptions...)
 
 			m, err := detector.Detect()
