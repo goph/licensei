@@ -75,6 +75,16 @@ ignored = [
 ```
 
 
+## GitHub Authentication
+
+Licensei uses Github to lookup licenses for most of the packages.
+The used parts of GitHub API does not require authentication, but it's easy to get rate limited,
+so it is recommended to configure a personal access token in your environment:
+
+```bash
+export GITHUB_TOKEN=xyz
+```
+
 ## Development
 
 The project uses Go Modules, so the minimum Go version is 1.11.4.
