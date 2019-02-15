@@ -2,10 +2,14 @@ package github
 
 import (
 	"context"
+	"encoding/base64"
+	"fmt"
 	"net/http"
 
 	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
+	"gopkg.in/src-d/go-license-detector.v2/licensedb"
+	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
 )
 
 // DetectorOption configures the detector.
@@ -62,9 +66,40 @@ func (d *detector) DetectContext(ctx context.Context) (map[string]float32, error
 		return nil, err
 	}
 
-	if lic.License.SPDXID != nil && *lic.License.SPDXID != "NOASSERTION" {
-		return map[string]float32{*(lic.License.SPDXID): 1}, nil
+	if lic.GetLicense().GetSPDXID() != "" && lic.GetLicense().GetSPDXID() != "NOASSERTION" {
+		return map[string]float32{lic.GetLicense().GetSPDXID(): 1}, nil
+	}
+
+	// There is a license, but it couldn't be detected.
+	if lic.GetLicense().GetSPDXID() == "NOASSERTION" {
+		return licensedb.Detect(&filerImpl{License: lic})
 	}
 
 	return nil, errors.New("no license found")
 }
+
+// filerImpl implements filer.Filer to return the license text directly
+// from the github.RepositoryLicense structure.
+// Copied from https://github.com/mitchellh/golicense/blob/dafaeff2016e81a739a2346cade4afd87b8e8647/license/github/detect.go#L49
+type filerImpl struct {
+	License *github.RepositoryLicense
+}
+
+func (f *filerImpl) ReadFile(name string) ([]byte, error) {
+	if name != "LICENSE" {
+		return nil, fmt.Errorf("unknown file: %s", name)
+	}
+
+	return base64.StdEncoding.DecodeString(f.License.GetContent())
+}
+
+func (f *filerImpl) ReadDir(dir string) ([]filer.File, error) {
+	// We only support root
+	if dir != "" {
+		return nil, nil
+	}
+
+	return []filer.File{filer.File{Name: "LICENSE"}}, nil
+}
+
+func (f *filerImpl) Close() {}
