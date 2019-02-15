@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
+## [0.1.0] - 2019-02-15
+
 ### Added
 
 - Go Modules support
@@ -31,5 +34,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 0.0.1 - 2018-08-27
 
-[Unreleased]: https://github.com/goph/licensei/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/goph/licensei/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/goph/licensei/compare/v0.0.7...v0.1.0
 [0.0.7]: https://github.com/goph/licensei/compare/v0.0.6...v0.0.7
