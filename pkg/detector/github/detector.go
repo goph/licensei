@@ -99,7 +99,7 @@ func (f *filerImpl) ReadDir(dir string) ([]filer.File, error) {
 		return nil, nil
 	}
 
-	return []filer.File{filer.File{Name: "LICENSE"}}, nil
+	return []filer.File{{Name: "LICENSE"}}, nil
 }
 
 func (f *filerImpl) Close() {}
