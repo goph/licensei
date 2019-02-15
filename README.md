@@ -1,5 +1,6 @@
 # Licensei
 
+[![Go Version](https://img.shields.io/badge/go%20version-%3E=1.11.4-orange.svg?style=flat-square)](https://github.com/goph/licensei)
 [![Build Status](https://travis-ci.com/goph/licensei.svg?branch=master)](https://travis-ci.com/goph/licensei)
 [![Go Report Card](https://goreportcard.com/badge/github.com/goph/licensei?style=flat-square)](https://goreportcard.com/report/github.com/goph/licensei)
 [![GolangCI](https://golangci.com/badges/github.com/goph/licensei.svg)](https://golangci.com)
@@ -10,11 +11,7 @@
 
 ## Development
 
-The project requires [Dep](https://golang.github.io/dep/) to install dependencies.
-
-``` bash
-$ make dep
-```
+The project uses Go Modules, so the minimum Go version is 1.11.4.
 
 When all coding and testing is done, please run the test suite:
 
