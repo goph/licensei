@@ -47,7 +47,7 @@ func (d *LicenseDetector) Detect(dependencies []Dependency) ([]Dependency, error
 
 		var matches map[string]float32
 
-		_, err := os.Stat("vendor")
+		_, err := os.Stat("vendor/" + dep.Name)
 		if !os.IsNotExist(err) {
 			f, err := sourced.FilerFromDirectory("vendor/" + dep.Name)
 			if err != nil {
