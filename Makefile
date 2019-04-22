@@ -21,11 +21,11 @@ endif
 TEST_FORMAT = short-verbose
 endif
 
-GOTESTSUM_VERSION = 0.3.2
-GOLANGCI_VERSION = 1.13.2
+GOTESTSUM_VERSION = 0.3.4
+GOLANGCI_VERSION = 1.16.0
 GORELEASER_VERSION = 0.98.0
 
-GOLANG_VERSION = 1.11.4
+GOLANG_VERSION = 1.12
 
 .PHONY: clear
 clear: ## Clear the working area and the project
