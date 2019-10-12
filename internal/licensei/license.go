@@ -7,12 +7,13 @@ import (
 
 	"github.com/google/go-github/github"
 	"github.com/goph/emperror"
+	"github.com/pkg/errors"
+	"golang.org/x/oauth2"
+
 	githubdetector "github.com/goph/licensei/pkg/detector/github"
 	"github.com/goph/licensei/pkg/detector/sourced"
 	"github.com/goph/licensei/pkg/licensematch"
 	"github.com/goph/licensei/pkg/resolver"
-	"github.com/pkg/errors"
-	"golang.org/x/oauth2"
 )
 
 type LicenseDetector struct {

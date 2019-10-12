@@ -4,6 +4,9 @@ package resolver
 import (
 	"fmt"
 	"regexp"
+	"strings"
+
+	"golang.org/x/tools/go/vcs"
 )
 
 var golangRe = regexp.MustCompile(`^golang\.org/x/([^/]+)$`)
@@ -30,6 +33,13 @@ func Resolve(name string) string {
 			matches[1] = "go-" + matches[2]
 		}
 		return fmt.Sprintf("github.com/%s/%s", matches[1], matches[2])
+	}
+
+	if !strings.HasPrefix(name, "github.com/") {
+		repoRoot, _ := vcs.RepoRootForImportPath(name, false)
+		if repoRoot != nil && repoRoot.Repo != "" {
+			return strings.TrimPrefix(repoRoot.Repo, "https://")
+		}
 	}
 
 	return name

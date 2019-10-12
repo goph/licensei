@@ -2,6 +2,7 @@ package licensei
 
 import (
 	"github.com/goph/licensei/pkg/pkgmgr/gomod"
+
 	"github.com/pkg/errors"
 )
 

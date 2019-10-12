@@ -1,5 +1,7 @@
 module github.com/goph/licensei
 
+go 1.13
+
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/alcortesm/tgz v0.0.0-20161220082320-9c5fe88206d7 // indirect
@@ -44,10 +46,9 @@ require (
 	github.com/src-d/gcfg v1.4.0 // indirect
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/xanzy/ssh-agent v0.2.0 // indirect
-	golang.org/x/crypto v0.0.0-20190211182817-74369b46fc67 // indirect
 	golang.org/x/exp v0.0.0-20190212162250-21964bba6549 // indirect
-	golang.org/x/net v0.0.0-20190213061140-3a22650c66bd // indirect
 	golang.org/x/oauth2 v0.0.0-20190212230446-3e8b2be13635
+	golang.org/x/tools v0.0.0-20191011211836-4c025a95b26e
 	gonum.org/v1/gonum v0.0.0-20190214070112-c5cc4a235799 // indirect
 	gonum.org/v1/netlib v0.0.0-20190119082159-9be13e02fd56 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.6 // indirect
