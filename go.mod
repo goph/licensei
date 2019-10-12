@@ -1,5 +1,7 @@
 module github.com/goph/licensei
 
+go 1.13
+
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/alcortesm/tgz v0.0.0-20161220082320-9c5fe88206d7 // indirect
