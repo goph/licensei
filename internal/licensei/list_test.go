@@ -11,7 +11,7 @@ import (
 func TestJsonListView_Render(t *testing.T) {
 	buf := new(bytes.Buffer)
 
-	view := NewJsonListView(buf)
+	view := NewJSONListView(buf)
 
 	model := ListViewModel{
 		Dependencies: []ListDependencyItem{

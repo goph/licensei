@@ -3,9 +3,10 @@ package licensei
 import (
 	"os"
 
-	"github.com/goph/licensei/internal/licensei"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/goph/licensei/internal/licensei"
 )
 
 type cacheOptions struct {

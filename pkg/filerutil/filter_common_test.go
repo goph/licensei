@@ -3,8 +3,9 @@ package filerutil_test
 import (
 	"testing"
 
-	. "github.com/goph/licensei/pkg/filerutil"
 	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
+
+	. "github.com/goph/licensei/pkg/filerutil"
 )
 
 func TestCorrectnessFilter(t *testing.T) {

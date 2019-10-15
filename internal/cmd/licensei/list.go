@@ -4,9 +4,10 @@ import (
 	"errors"
 	"os"
 
-	"github.com/goph/licensei/internal/licensei"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/goph/licensei/internal/licensei"
 )
 
 type listOptions struct {
@@ -46,7 +47,7 @@ func runList(options listOptions) error {
 		view = licensei.NewTableListView(os.Stdout)
 
 	case "json":
-		view = licensei.NewJsonListView(os.Stdout)
+		view = licensei.NewJSONListView(os.Stdout)
 	default:
 		return errors.New("unsupported format: " + options.format)
 	}

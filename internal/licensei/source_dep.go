@@ -3,8 +3,9 @@ package licensei
 import (
 	"os"
 
-	"github.com/goph/licensei/pkg/pkgmgr/gopkg"
 	"github.com/pkg/errors"
+
+	"github.com/goph/licensei/pkg/pkgmgr/gopkg"
 )
 
 type depDependencySource struct {
