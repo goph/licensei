@@ -1,7 +1,6 @@
 # Licensei
 
-[![Go Version](https://img.shields.io/badge/go%20version-%3E=1.11.4-orange.svg?style=flat-square)](https://github.com/goph/licensei)
-[![Build Status](https://travis-ci.com/goph/licensei.svg?branch=master)](https://travis-ci.com/goph/licensei)
+![Build Status](https://github.com/goph/licensei/workflows/CI/badge.svg?style=flat-square)
 [![Go Report Card](https://goreportcard.com/badge/github.com/goph/licensei?style=flat-square)](https://goreportcard.com/report/github.com/goph/licensei)
 [![GolangCI](https://golangci.com/badges/github.com/goph/licensei.svg)](https://golangci.com)
 [![GoDoc](http://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](https://godoc.org/github.com/goph/licensei)
@@ -21,7 +20,7 @@ bin/licensei: bin/licensei-${LICENSEI_VERSION}
 	@ln -sf licensei-${LICENSEI_VERSION} bin/licensei
 bin/licensei-${LICENSEI_VERSION}:
 	@mkdir -p bin
-	curl -sfL https://raw.githubusercontent.com/goph/licensei/master/install.sh | bash -s v${LICENSEI_VERSION}
+	curl -sfL https://git.io/licensei | bash -s v${LICENSEI_VERSION}
 	@mv bin/licensei $@
 ```
 
@@ -35,6 +34,7 @@ Usage:
 Available Commands:
   cache       Cache licenses of dependencies in the project
   check       Check licenses of dependencies in the project
+  header      Check license header of files
   help        Help about any command
   list        List licenses of dependencies in the project
 
