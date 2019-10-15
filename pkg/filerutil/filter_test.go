@@ -5,8 +5,9 @@ import (
 	"reflect"
 	"testing"
 
-	. "github.com/goph/licensei/pkg/filerutil"
 	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
+
+	. "github.com/goph/licensei/pkg/filerutil"
 )
 
 type filerStub struct {

@@ -24,8 +24,8 @@ type jsonListView struct {
 	output io.Writer
 }
 
-// NewJsonListView returns a view that outputs a license list as JSON.
-func NewJsonListView(output io.Writer) *jsonListView {
+// NewJSONListView returns a view that outputs a license list as JSON.
+func NewJSONListView(output io.Writer) *jsonListView {
 	return &jsonListView{
 		output: output,
 	}

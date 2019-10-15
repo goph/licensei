@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/goph/licensei/internal/cmd/licensei"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/goph/licensei/internal/cmd/licensei"
 )
 
 // nolint: gochecknoglobals

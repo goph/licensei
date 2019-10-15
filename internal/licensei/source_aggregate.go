@@ -39,7 +39,6 @@ func (s *aggregatedDependencySource) Dependencies() ([]Dependency, error) {
 		}
 
 		deps = append(deps, sdeps...)
-
 	}
 
 	return deps, nil

@@ -1,7 +1,19 @@
+linters-settings:
+    golint:
+        min-confidence: 0.1
+    goimports:
+        local-prefixes: github.com/goph/licensei
+
 linters:
     enable-all: true
     disable:
+        - funlen
+        - godox
+        - wsl
         - golint
         - lll
         - errcheck
         - maligned
+
+service:
+    golangci-lint-version: 1.20.x
