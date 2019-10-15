@@ -8,5 +8,6 @@ func AddCommands(cmd *cobra.Command) {
 		NewListCommand(),
 		NewCheckCommand(),
 		NewCacheCommand(),
+		NewHeaderCommand(),
 	)
 }
