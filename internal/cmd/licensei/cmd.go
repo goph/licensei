@@ -9,5 +9,6 @@ func AddCommands(cmd *cobra.Command) {
 		NewCheckCommand(),
 		NewCacheCommand(),
 		NewHeaderCommand(),
+		NewStatCommand(),
 	)
 }
