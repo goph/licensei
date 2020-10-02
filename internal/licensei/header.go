@@ -54,6 +54,7 @@ func (c HeaderChecker) Check(root string, template string) (HeaderViolations, er
 
 			return nil
 		}
+		defer file.Close()
 
 		b := bufio.NewReader(file)
 		var lines string
