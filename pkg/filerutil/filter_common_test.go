@@ -3,7 +3,7 @@ package filerutil_test
 import (
 	"testing"
 
-	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
+	"github.com/go-enry/go-license-detector/v4/licensedb/filer"
 
 	. "github.com/goph/licensei/pkg/filerutil"
 )

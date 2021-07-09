@@ -1,7 +1,7 @@
 package filerutil
 
 import (
-	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
+	"github.com/go-enry/go-license-detector/v4/licensedb/filer"
 )
 
 type filter interface {
@@ -72,4 +72,8 @@ func (f *filterFiler) ReadDir(path string) ([]filer.File, error) {
 // Close frees all the resources allocated by this Filer.
 func (f *filterFiler) Close() {
 	f.filer.Close()
+}
+
+func (f *filterFiler) PathsAreAlwaysSlash() bool {
+	return f.filer.PathsAreAlwaysSlash()
 }
