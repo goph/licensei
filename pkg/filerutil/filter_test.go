@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
+	"github.com/go-enry/go-license-detector/v4/licensedb/filer"
 
 	. "github.com/goph/licensei/pkg/filerutil"
 )
@@ -33,6 +33,10 @@ func (f *filerStub) ReadDir(path string) ([]filer.File, error) {
 
 func (f *filerStub) Close() {
 	f.t.Fatal("this method should not be called: Close")
+}
+
+func (f *filerStub) PathsAreAlwaysSlash() bool {
+	return true
 }
 
 func TestFilterFiler(t *testing.T) {

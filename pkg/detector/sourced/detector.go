@@ -3,8 +3,8 @@ package sourced
 import (
 	"context"
 
-	"gopkg.in/src-d/go-license-detector.v2/licensedb"
-	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
+	"github.com/go-enry/go-license-detector/v4/licensedb"
+	"github.com/go-enry/go-license-detector/v4/licensedb/filer"
 )
 
 type detector struct {
@@ -20,7 +20,18 @@ func NewDetector(filer filer.Filer) *detector {
 }
 
 func (d *detector) Detect() (map[string]float32, error) {
-	return licensedb.Detect(d.filer)
+	matches, err := licensedb.Detect(d.filer)
+	if err != nil {
+		return nil, err
+	}
+
+	m := make(map[string]float32, len(matches))
+
+	for l, v := range matches {
+		m[l] = v.Confidence
+	}
+
+	return m, nil
 }
 
 func (d *detector) DetectContext(ctx context.Context) (map[string]float32, error) {

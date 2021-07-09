@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-enry/go-license-detector/v4/licensedb"
+	"github.com/go-enry/go-license-detector/v4/licensedb/filer"
 	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
-	"gopkg.in/src-d/go-license-detector.v2/licensedb"
-	"gopkg.in/src-d/go-license-detector.v2/licensedb/filer"
 )
 
 // DetectorOption configures the detector.
@@ -72,7 +72,18 @@ func (d *detector) DetectContext(ctx context.Context) (map[string]float32, error
 
 	// There is a license, but it couldn't be detected.
 	if lic.GetLicense().GetSPDXID() == "NOASSERTION" {
-		return licensedb.Detect(&filerImpl{License: lic})
+		matches, err := licensedb.Detect(&filerImpl{License: lic})
+		if err != nil {
+			return nil, err
+		}
+
+		m := make(map[string]float32, len(matches))
+
+		for l, v := range matches {
+			m[l] = v.Confidence
+		}
+
+		return m, nil
 	}
 
 	return nil, errors.New("no license found")
@@ -103,3 +114,7 @@ func (f *filerImpl) ReadDir(dir string) ([]filer.File, error) {
 }
 
 func (f *filerImpl) Close() {}
+
+func (f *filerImpl) PathsAreAlwaysSlash() bool {
+	return true
+}
