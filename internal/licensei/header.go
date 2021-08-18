@@ -21,7 +21,8 @@ func (c HeaderChecker) Check(root string, template string) (HeaderViolations, er
 	violations := HeaderViolations{}
 
 	template = regexp.QuoteMeta(template)
-	template = strings.Replace(template, ":YEAR:", "[0-9]+", -1)
+	// `([0-9]{4}[,]?[ ]?)+` allows to match multiple appearances of `:YEAR:` that a header might have
+	template = strings.Replace(template, ":YEAR:", "([0-9]{4}[,]?[ ]?)+", -1)
 
 	err := filepath.Walk(root, func(path string, info os.FileInfo, _ error) error {
 		if info.IsDir() {
