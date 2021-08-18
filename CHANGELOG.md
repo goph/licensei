@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Support multiple year entries in the header check template
+
 
 ## [0.4.0] - 2021-07-14
 
