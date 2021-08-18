@@ -1,4 +1,4 @@
-// Copyright © 2019, 2020, 2021, 2022, 2023, and 2024 Márk Sági-Kazár
+// Copyright © 2019 and 2020 Márk Sági-Kazár
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
