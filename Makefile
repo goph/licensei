@@ -19,7 +19,7 @@ endif
 
 GOTESTSUM_VERSION = 0.3.5
 GOLANGCI_VERSION = 1.20.0
-GORELEASER_VERSION = 0.119.0
+GORELEASER_VERSION = 1.10.2
 
 GOLANG_VERSION = 1.13
 
@@ -78,7 +78,7 @@ lint: bin/golangci-lint ## Run linter
 
 bin/goreleaser: ## Install goreleaser
 	@mkdir -p ./bin/
-	curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | bash -s -- v${GORELEASER_VERSION}
+	scripts/install_goreleaser.sh v${GORELEASER_VERSION}
 
 .PHONY: release
 release: bin/goreleaser ## Release current tag
