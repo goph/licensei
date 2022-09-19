@@ -17,9 +17,9 @@ endif
 TEST_FORMAT = short-verbose
 endif
 
-GOTESTSUM_VERSION = 0.3.5
-GOLANGCI_VERSION = 1.20.0
-GORELEASER_VERSION = 1.10.2
+GOTESTSUM_VERSION = 1.8.2
+GOLANGCI_VERSION = 1.49.0
+GORELEASER_VERSION = 1.11.4
 
 .PHONY: clear
 clear: ## Clear the working area and the project
@@ -61,8 +61,8 @@ bin/golangci-lint: bin/golangci-lint-${GOLANGCI_VERSION}
 	@ln -sf golangci-lint-${GOLANGCI_VERSION} bin/golangci-lint
 bin/golangci-lint-${GOLANGCI_VERSION}:
 	@mkdir -p bin
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ./bin/ v${GOLANGCI_VERSION}
-	@mv bin/golangci-lint $@
+	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b ./bin/ v${GOLANGCI_VERSION}
+	@mv bin/golangci-lint "$@"
 
 .PHONY: lint
 lint: bin/golangci-lint ## Run linter
