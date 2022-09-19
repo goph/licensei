@@ -17,11 +17,9 @@ endif
 TEST_FORMAT = short-verbose
 endif
 
-GOTESTSUM_VERSION = 0.3.5
-GOLANGCI_VERSION = 1.20.0
-GORELEASER_VERSION = 1.10.2
-
-GOLANG_VERSION = 1.13
+GOTESTSUM_VERSION = 1.8.2
+GOLANGCI_VERSION = 1.49.0
+GORELEASER_VERSION = 1.11.4
 
 .PHONY: clear
 clear: ## Clear the working area and the project
@@ -31,14 +29,8 @@ clear: ## Clear the working area and the project
 clean: ## Clean builds
 	rm -rf ${BUILD_DIR}/
 
-.PHONY: goversion
-goversion:
-ifneq (${IGNORE_GOLANG_VERSION_REQ}, 1)
-	@printf "${GOLANG_VERSION}\n$$(go version | awk '{sub(/^go/, "", $$3);print $$3}')" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -g | head -1 | grep -q -E "^${GOLANG_VERSION}$$" || (printf "Required Go version is ${GOLANG_VERSION}\nInstalled: `go version`" && exit 1)
-endif
-
 .PHONY: build
-build: goversion ## Build all binaries
+build: ## Build all binaries
 ifeq (${VERBOSE}, 1)
 	go env
 endif
@@ -69,8 +61,8 @@ bin/golangci-lint: bin/golangci-lint-${GOLANGCI_VERSION}
 	@ln -sf golangci-lint-${GOLANGCI_VERSION} bin/golangci-lint
 bin/golangci-lint-${GOLANGCI_VERSION}:
 	@mkdir -p bin
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b ./bin/ v${GOLANGCI_VERSION}
-	@mv bin/golangci-lint $@
+	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b ./bin/ v${GOLANGCI_VERSION}
+	@mv bin/golangci-lint "$@"
 
 .PHONY: lint
 lint: bin/golangci-lint ## Run linter
