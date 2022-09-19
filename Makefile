@@ -21,8 +21,6 @@ GOTESTSUM_VERSION = 0.3.5
 GOLANGCI_VERSION = 1.20.0
 GORELEASER_VERSION = 1.10.2
 
-GOLANG_VERSION = 1.13
-
 .PHONY: clear
 clear: ## Clear the working area and the project
 	rm -rf bin/
@@ -31,14 +29,8 @@ clear: ## Clear the working area and the project
 clean: ## Clean builds
 	rm -rf ${BUILD_DIR}/
 
-.PHONY: goversion
-goversion:
-ifneq (${IGNORE_GOLANG_VERSION_REQ}, 1)
-	@printf "${GOLANG_VERSION}\n$$(go version | awk '{sub(/^go/, "", $$3);print $$3}')" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -g | head -1 | grep -q -E "^${GOLANG_VERSION}$$" || (printf "Required Go version is ${GOLANG_VERSION}\nInstalled: `go version`" && exit 1)
-endif
-
 .PHONY: build
-build: goversion ## Build all binaries
+build: ## Build all binaries
 ifeq (${VERBOSE}, 1)
 	go env
 endif
