@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-enry/go-license-detector/v4/licensedb"
 	"github.com/go-enry/go-license-detector/v4/licensedb/filer"
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/pkg/errors"
 )
 
