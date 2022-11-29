@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/go-enry/go-license-detector/v4 v4.3.0
-	github.com/google/go-github v17.0.0+incompatible
+	github.com/google/go-github/v48 v48.1.0
 	github.com/goph/emperror v0.17.2
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pelletier/go-toml v1.9.5
