@@ -36,7 +36,7 @@ ifeq (${VERBOSE}, 1)
 endif
 
 	@mkdir -p ${BUILD_DIR}
-	go build ${GOARGS} -tags "${GOTAGS}" -ldflags "${LDFLAGS}" -o ${BUILD_DIR}/ ./cmd/...
+	go build ${GOARGS} -trimpath -tags "${GOTAGS}" -ldflags "${LDFLAGS}" -o ${BUILD_DIR}/ ./cmd/...
 
 .PHONY: check
 check: test lint ## Run tests and linters

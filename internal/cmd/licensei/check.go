@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/exp/slog"
 
 	"github.com/goph/licensei/internal/licensei"
 )
@@ -37,19 +38,23 @@ func NewCheckCommand() *cobra.Command {
 	return cmd
 }
 func runCheck(options checkOptions) error {
+	logger := slog.Default()
+
+	logger.Debug("start check")
+
 	if len(options.approved) == 0 {
 		fmt.Println("everything is approved")
 
 		return nil
 	}
 
-	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource())
+	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource(logger), logger)
 	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err
 	}
 
-	detector := licensei.NewLicenseDetector(options.githubToken)
+	detector := licensei.NewLicenseDetector(options.githubToken, logger)
 
 	dependencies, err = detector.Detect(dependencies)
 	if err != nil {

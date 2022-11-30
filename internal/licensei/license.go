@@ -8,6 +8,7 @@ import (
 	"github.com/google/go-github/v48/github"
 	"github.com/goph/emperror"
 	"github.com/pkg/errors"
+	"golang.org/x/exp/slog"
 	"golang.org/x/oauth2"
 
 	githubdetector "github.com/goph/licensei/pkg/detector/github"
@@ -18,10 +19,13 @@ import (
 
 type LicenseDetector struct {
 	githubDetectorOptions []githubdetector.DetectorOption
+	logger                *slog.Logger
 }
 
-func NewLicenseDetector(githubToken string) *LicenseDetector {
-	l := new(LicenseDetector)
+func NewLicenseDetector(githubToken string, logger *slog.Logger) *LicenseDetector {
+	l := &LicenseDetector{
+		logger: logger,
+	}
 
 	if githubToken != "" {
 		ctx := context.Background()
@@ -38,6 +42,8 @@ func NewLicenseDetector(githubToken string) *LicenseDetector {
 }
 
 func (d *LicenseDetector) Detect(dependencies []Dependency) ([]Dependency, error) {
+	logger := d.logger
+
 	var detector interface {
 		Detect() (map[string]float32, error)
 	}
@@ -62,6 +68,8 @@ func (d *LicenseDetector) Detect(dependencies []Dependency) ([]Dependency, error
 
 			matches, err = detector.Detect()
 			if err != nil { // TODO: add error handling
+				logger.LogAttrs(slog.ErrorLevel, "sourced detection failed", slog.Any(slog.ErrorKey, err), slog.String("dependency", dep.Name))
+
 				continue
 			}
 		}
@@ -75,6 +83,8 @@ func (d *LicenseDetector) Detect(dependencies []Dependency) ([]Dependency, error
 			m, err := detector.Detect()
 			if err == nil { // TODO: add error handling
 				matches = licensematch.Merge(matches, m)
+			} else {
+				logger.LogAttrs(slog.ErrorLevel, "github detection failed", slog.Any(slog.ErrorKey, err), slog.String("dependency", dep.Name))
 			}
 		}
 
