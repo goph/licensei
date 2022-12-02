@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/exp/slog"
 
 	"github.com/goph/licensei/internal/licensei"
 )
@@ -41,6 +42,10 @@ func NewListCommand() *cobra.Command {
 }
 
 func runList(options listOptions) error {
+	logger := slog.Default()
+
+	logger.Debug("start list")
+
 	var view listView
 	switch options.format {
 	case "", "table":
@@ -52,13 +57,13 @@ func runList(options listOptions) error {
 		return errors.New("unsupported format: " + options.format)
 	}
 
-	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource())
+	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource(logger), logger)
 	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err
 	}
 
-	detector := licensei.NewLicenseDetector(options.githubToken)
+	detector := licensei.NewLicenseDetector(options.githubToken, logger)
 
 	dependencies, err = detector.Detect(dependencies)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/exp/slog"
 
 	"github.com/goph/licensei/internal/licensei"
 )
@@ -34,23 +35,28 @@ func NewCacheCommand() *cobra.Command {
 
 	return cmd
 }
+
 func runCache(options cacheOptions) error {
+	logger := slog.Default()
+
+	logger.Debug("start cache")
+
 	var dependencies []licensei.Dependency
 	var err error
 
 	// Invalidate cache data
 	if options.update {
-		source := licensei.NewAggregatedDependencySource()
+		source := licensei.NewAggregatedDependencySource(logger)
 		dependencies, err = source.Dependencies()
 	} else {
-		source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource())
+		source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource(logger), logger)
 		dependencies, err = source.Dependencies()
 	}
 	if err != nil {
 		return err
 	}
 
-	detector := licensei.NewLicenseDetector(options.githubToken)
+	detector := licensei.NewLicenseDetector(options.githubToken, logger)
 
 	dependencies, err = detector.Detect(dependencies)
 	if err != nil {

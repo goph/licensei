@@ -33,6 +33,7 @@ func NewHeaderCommand() *cobra.Command {
 
 	return cmd
 }
+
 func runHeader(options headerOptions) error {
 	wd, err := os.Getwd()
 	if err != nil {

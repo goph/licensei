@@ -2,18 +2,26 @@ package licensei
 
 import (
 	"github.com/goph/licensei/pkg/pkgmgr/gomod"
+	"golang.org/x/exp/slog"
 
 	"github.com/pkg/errors"
 )
 
 type gomodDependencySource struct {
+	logger *slog.Logger
 }
 
-func NewGoModDependencySource() *gomodDependencySource {
-	return new(gomodDependencySource)
+func NewGoModDependencySource(logger *slog.Logger) *gomodDependencySource {
+	return &gomodDependencySource{
+		logger: logger,
+	}
 }
 
 func (s *gomodDependencySource) Dependencies() ([]Dependency, error) {
+	logger := s.logger.WithGroup("gomod")
+
+	logger.Debug("listing go modules")
+
 	deps, err := gomod.ListDeps("")
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to list dependencies")

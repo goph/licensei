@@ -2,13 +2,14 @@ package licensei
 
 import (
 	"github.com/goph/licensei/pkg/pkgmgr"
+	"golang.org/x/exp/slog"
 )
 
 type aggregatedDependencySource struct {
 	dependencySources []dependencySource
 }
 
-func NewAggregatedDependencySource() *aggregatedDependencySource {
+func NewAggregatedDependencySource(logger *slog.Logger) *aggregatedDependencySource {
 	pkgmgrs, err := pkgmgr.DetectPackageManagers(".")
 	if err != nil {
 		panic(err)
@@ -23,7 +24,7 @@ func NewAggregatedDependencySource() *aggregatedDependencySource {
 	}
 
 	if pkgmgrs.GoMod {
-		source.dependencySources = append(source.dependencySources, NewGoModDependencySource())
+		source.dependencySources = append(source.dependencySources, NewGoModDependencySource(logger))
 	}
 
 	return source

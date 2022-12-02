@@ -8,6 +8,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/exp/slog"
 
 	"github.com/goph/licensei/internal/licensei"
 )
@@ -31,14 +32,19 @@ func NewStatCommand() *cobra.Command {
 
 	return cmd
 }
+
 func runStat(options statOptions, stdout io.Writer) error {
-	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource())
+	logger := slog.Default()
+
+	logger.Debug("start stat")
+
+	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource(logger), logger)
 	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err
 	}
 
-	detector := licensei.NewLicenseDetector(options.githubToken)
+	detector := licensei.NewLicenseDetector(options.githubToken, logger)
 
 	dependencies, err = detector.Detect(dependencies)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 
 	toml "github.com/pelletier/go-toml"
 	"github.com/pkg/errors"
+	"golang.org/x/exp/slog"
 )
 
 type licenseCache struct {
@@ -39,16 +40,22 @@ func WriteCache(w io.Writer, dependencies []Dependency) error {
 
 type cacheDependencySource struct {
 	delegatedDependencySource dependencySource
+	logger                    *slog.Logger
 }
 
-func NewCacheProjectSource(delegatedDependencySource dependencySource) *cacheDependencySource {
+func NewCacheProjectSource(delegatedDependencySource dependencySource, logger *slog.Logger) *cacheDependencySource {
 	return &cacheDependencySource{
 		delegatedDependencySource: delegatedDependencySource,
+		logger:                    logger,
 	}
 }
 
 func (s *cacheDependencySource) Dependencies() ([]Dependency, error) {
+	logger := s.logger.WithGroup("dep_cache")
+
 	var cachedDependencies []Dependency
+
+	logger.Debug("load cache file")
 
 	cacheFile, err := os.Open(".licensei.cache")
 	if err == nil {
@@ -66,10 +73,14 @@ func (s *cacheDependencySource) Dependencies() ([]Dependency, error) {
 
 	_ = cacheFile.Close()
 
+	logger.Debug("load dependencies")
+
 	sourceDependencies, err := s.delegatedDependencySource.Dependencies()
 	if err != nil {
 		return nil, err
 	}
+
+	logger.Debug("process dependencies")
 
 	cachedDependencyIndex := indexDependencies(cachedDependencies)
 
