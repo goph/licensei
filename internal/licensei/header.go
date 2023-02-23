@@ -2,6 +2,7 @@ package licensei
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -12,6 +13,7 @@ import (
 type HeaderChecker struct {
 	IgnorePaths []string
 	IgnoreFiles []string
+	Authors     []string
 }
 
 type HeaderViolations map[string]string
@@ -24,6 +26,11 @@ func (c HeaderChecker) Check(root string, template string) (HeaderViolations, er
 	// `([0-9]{4}[,]?[\s]?(\band \b)?)+` allows to match multiple appearances of `:YEAR:` that a header might have
 	// for example, "2019 and 2020", or "2019, 2020, and 2021"
 	template = strings.Replace(template, ":YEAR:", "([0-9]{4}[,]?[\\s]?(\\band \\b)?)+", -1)
+
+	if len(c.Authors) > 0 {
+		authors := fmt.Sprintf(`(\b%s\b)`, strings.Join(c.Authors, `\b|\b`))
+		template = strings.Replace(template, ":AUTHOR:", authors, -1)
+	}
 
 	err := filepath.Walk(root, func(path string, info os.FileInfo, _ error) error {
 		if info.IsDir() {

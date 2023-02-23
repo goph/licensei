@@ -33,3 +33,52 @@ func TestHeaderChecker_Check(t *testing.T) {
 		t.Errorf("%s: %s", violation, path)
 	}
 }
+
+func TestHeaderChecker_Author(t *testing.T) {
+	template := `// Copyright © :YEAR: :AUTHOR:`
+
+	testdata := []struct {
+		valid   bool
+		authors [][]string
+	}{
+		{
+			valid: true,
+			authors: [][]string{
+				{"Márk Sági-Kazár"},
+				{"Márk"},
+				{"Márk", "Jozsi"},
+			},
+		},
+		{
+			valid: false,
+			authors: [][]string{
+				{"Már"},
+				{"Márk Sági-K"},
+				{"Jozsi"},
+			},
+		},
+	}
+
+	for _, td := range testdata {
+		for _, a := range td.authors {
+			checker := HeaderChecker{
+				IgnorePaths: []string{"path"},
+				IgnoreFiles: []string{"*_gen.go", "*_test.go"},
+				Authors:     a,
+			}
+
+			violations, err := checker.Check("testdata/header", template)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if td.valid && len(violations) > 0 {
+				for path, violation := range violations {
+					t.Errorf("%s: %s", violation, path)
+				}
+			} else if !td.valid && len(violations) == 0 {
+				t.Errorf("expected error for authors %+v", a)
+			}
+		}
+	}
+}
