@@ -14,6 +14,7 @@ type headerOptions struct {
 	template    string
 	ignorePaths []string
 	ignoreFiles []string
+	authors     []string
 }
 
 func NewHeaderCommand() *cobra.Command {
@@ -26,6 +27,7 @@ func NewHeaderCommand() *cobra.Command {
 			options.template = viper.GetString("header.template")
 			options.ignorePaths = viper.GetStringSlice("header.ignorePaths")
 			options.ignoreFiles = viper.GetStringSlice("header.ignoreFiles")
+			options.authors = viper.GetStringSlice("header.authors")
 
 			return runHeader(options)
 		},
@@ -43,6 +45,7 @@ func runHeader(options headerOptions) error {
 	violations, err := licensei.HeaderChecker{
 		IgnorePaths: options.ignorePaths,
 		IgnoreFiles: options.ignoreFiles,
+		Authors:     options.authors,
 	}.Check(wd, options.template)
 	if err != nil {
 		return err
