@@ -13,7 +13,7 @@ require (
 	github.com/spf13/viper v1.16.0
 	golang.org/x/exp v0.0.0-20221126150942-6ab00d035af9
 	golang.org/x/oauth2 v0.7.0
-	golang.org/x/tools v0.8.0
+	golang.org/x/tools v0.9.2
 )
 
 require (
