@@ -15,7 +15,7 @@ Install the latest pre-built binary from the [Releases](https://github.com/goph/
 Alternatively, place the following code in your `Makefile`:
 
 ```makefile
-LICENSEI_VERSION = 0.1.0
+LICENSEI_VERSION = 0.8.0
 bin/licensei: bin/licensei-${LICENSEI_VERSION}
 	@ln -sf licensei-${LICENSEI_VERSION} bin/licensei
 bin/licensei-${LICENSEI_VERSION}:
