@@ -21,7 +21,7 @@ type listView interface {
 	Render(model licensei.ListViewModel) error
 }
 
-func NewListCommand() *cobra.Command {
+func NewListCommand(globalOptions *GlobalOptions) *cobra.Command {
 	var options listOptions
 
 	cmd := &cobra.Command{
@@ -30,7 +30,7 @@ func NewListCommand() *cobra.Command {
 		RunE: func(_ *cobra.Command, _ []string) error {
 			options.githubToken = viper.GetString("github_token")
 
-			return runList(options)
+			return runList(globalOptions, options)
 		},
 	}
 
@@ -41,7 +41,7 @@ func NewListCommand() *cobra.Command {
 	return cmd
 }
 
-func runList(options listOptions) error {
+func runList(globalOptions *GlobalOptions, options listOptions) error {
 	logger := slog.Default()
 
 	logger.Debug("start list")
@@ -57,7 +57,10 @@ func runList(options listOptions) error {
 		return errors.New("unsupported format: " + options.format)
 	}
 
-	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource(logger), logger)
+	source := licensei.NewCacheProjectSource(
+		licensei.NewAggregatedDependencySource(logger, globalOptions.Path),
+		logger,
+	)
 	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err

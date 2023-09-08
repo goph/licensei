@@ -2,6 +2,7 @@ package licensei
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/pkg/errors"
 
@@ -9,17 +10,21 @@ import (
 )
 
 type depDependencySource struct {
+	path string
 }
 
-func NewDepDependencySource() *depDependencySource {
-	return new(depDependencySource)
+func NewDepDependencySource(path string) *depDependencySource {
+	return &depDependencySource{
+		path: path,
+	}
 }
 
 func (s *depDependencySource) Dependencies() ([]Dependency, error) {
-	lockFile, err := os.Open("Gopkg.lock")
+	lockFile, err := os.Open(filepath.Join(s.path, "Gopkg.lock"))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not open dep lock file")
 	}
+	defer lockFile.Close()
 
 	lock, err := gopkg.ReadLock(lockFile)
 	if err != nil {
