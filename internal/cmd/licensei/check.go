@@ -14,6 +14,7 @@ import (
 
 type checkOptions struct {
 	approved []string
+	unknown  []string
 	ignored  []string
 
 	githubToken string
@@ -27,6 +28,7 @@ func NewCheckCommand() *cobra.Command {
 		Short: "Check licenses of dependencies in the project",
 		RunE: func(_ *cobra.Command, _ []string) error {
 			options.approved = viper.GetStringSlice("approved")
+			options.unknown = viper.GetStringSlice("unknown")
 			options.ignored = viper.GetStringSlice("ignored")
 
 			options.githubToken = viper.GetString("github_token")
@@ -71,12 +73,20 @@ func runCheck(options checkOptions) error {
 
 	for _, dep := range dependencies {
 		var approved bool
+		var unknown bool
 
 		for _, license := range options.approved {
 			approved = approved || strings.EqualFold(license, dep.License)
 		}
 
-		if _, ignore := ignored[dep.Name]; !approved && !ignore {
+		// check for no licence
+		for _, v := range options.unknown {
+			if strings.EqualFold(v, dep.Name) && strings.EqualFold("", dep.License) {
+				unknown = unknown || true
+			}
+		}
+
+		if _, ignore := ignored[dep.Name]; !approved && !unknown && !ignore {
 			violations = append(violations, dep)
 		}
 	}
