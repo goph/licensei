@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -11,61 +12,59 @@ import (
 	"github.com/goph/licensei/internal/cmd/licensei"
 )
 
-// nolint: gochecknoglobals
-var config string
+func newRootCommand(options *licensei.GlobalOptions) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "licensei",
+		Short: "License master",
+		PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
+			return initConfig(options)
+		},
+	}
 
-// nolint: gochecknoglobals
-var debug bool
+	cmd.PersistentFlags().StringVar(&options.Config, "config", "", "config file (default is $PWD/.licensei.yaml)")
+	cmd.PersistentFlags().StringVar(&options.Path, "path", "", "path to project (the current directory is used by default)")
+	cmd.PersistentFlags().BoolVar(&options.Debug, "debug", false, "enable debug logging")
 
-// nolint: gochecknoinits
-func init() {
-	cobra.OnInitialize(initConfig)
-
-	rootCmd.PersistentFlags().StringVar(&config, "config", "", "config file (default is $PWD/.licensei.yaml)")
-	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debug logging")
-
-	licensei.AddCommands(rootCmd)
+	return cmd
 }
 
-func initConfig() {
+func initConfig(options *licensei.GlobalOptions) error {
 	viper.AutomaticEnv()
 
-	if config != "" {
+	if options.Config != "" {
 		// Use config file from the flag.
-		viper.SetConfigFile(config)
+		viper.SetConfigFile(options.Config)
 	} else {
 		viper.AddConfigPath(".")
 		viper.SetConfigName(".licensei")
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("can't read config:", err)
-		os.Exit(1)
+		return fmt.Errorf("can't read config: %w", err)
 	}
 
 	logHandler := slog.HandlerOptions{
-		AddSource: debug,
+		AddSource: options.Debug,
 		Level:     slog.InfoLevel,
 	}
 
-	if debug {
+	if options.Debug {
 		logHandler.Level = slog.DebugLevel
 	}
 
 	logger := slog.New(logHandler.NewTextHandler(os.Stderr))
 
 	slog.SetDefault(logger)
-}
 
-// nolint: gochecknoglobals
-var rootCmd = &cobra.Command{
-	Use:   "licensei",
-	Short: "License master",
+	return nil
 }
 
 func Execute() {
+	globalOptions := &licensei.GlobalOptions{}
+	rootCmd := newRootCommand(globalOptions)
+	licensei.AddCommands(rootCmd, globalOptions)
+
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalln(err)
 	}
 }

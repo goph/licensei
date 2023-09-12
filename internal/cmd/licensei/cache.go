@@ -16,7 +16,7 @@ type cacheOptions struct {
 	githubToken string
 }
 
-func NewCacheCommand() *cobra.Command {
+func NewCacheCommand(globalOptions *GlobalOptions) *cobra.Command {
 	var options cacheOptions
 
 	cmd := &cobra.Command{
@@ -25,7 +25,7 @@ func NewCacheCommand() *cobra.Command {
 		RunE: func(_ *cobra.Command, _ []string) error {
 			options.githubToken = viper.GetString("github_token")
 
-			return runCache(options)
+			return runCache(globalOptions, options)
 		},
 	}
 
@@ -36,7 +36,7 @@ func NewCacheCommand() *cobra.Command {
 	return cmd
 }
 
-func runCache(options cacheOptions) error {
+func runCache(globalOptions *GlobalOptions, options cacheOptions) error {
 	logger := slog.Default()
 
 	logger.Debug("start cache")
@@ -46,10 +46,13 @@ func runCache(options cacheOptions) error {
 
 	// Invalidate cache data
 	if options.update {
-		source := licensei.NewAggregatedDependencySource(logger)
+		source := licensei.NewAggregatedDependencySource(logger, globalOptions.Path)
 		dependencies, err = source.Dependencies()
 	} else {
-		source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource(logger), logger)
+		source := licensei.NewCacheProjectSource(
+			licensei.NewAggregatedDependencySource(logger, globalOptions.Path),
+			logger,
+		)
 		dependencies, err = source.Dependencies()
 	}
 	if err != nil {

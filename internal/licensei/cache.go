@@ -58,6 +58,10 @@ func (s *cacheDependencySource) Dependencies() ([]Dependency, error) {
 	logger.Debug("load cache file")
 
 	cacheFile, err := os.Open(".licensei.cache")
+	defer func() {
+		_ = cacheFile.Close()
+	}()
+
 	if err == nil {
 		p, err := ReadCache(cacheFile)
 		if err != nil {
@@ -70,8 +74,6 @@ func (s *cacheDependencySource) Dependencies() ([]Dependency, error) {
 		// at least log it dude
 		return nil, err
 	}
-
-	_ = cacheFile.Close()
 
 	logger.Debug("load dependencies")
 

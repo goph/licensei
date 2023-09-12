@@ -20,7 +20,7 @@ type checkOptions struct {
 	githubToken string
 }
 
-func NewCheckCommand() *cobra.Command {
+func NewCheckCommand(globalOptions *GlobalOptions) *cobra.Command {
 	var options checkOptions
 
 	cmd := &cobra.Command{
@@ -33,13 +33,13 @@ func NewCheckCommand() *cobra.Command {
 
 			options.githubToken = viper.GetString("github_token")
 
-			return runCheck(options)
+			return runCheck(globalOptions, options)
 		},
 	}
 
 	return cmd
 }
-func runCheck(options checkOptions) error {
+func runCheck(globalOptions *GlobalOptions, options checkOptions) error {
 	logger := slog.Default()
 
 	logger.Debug("start check")
@@ -50,7 +50,10 @@ func runCheck(options checkOptions) error {
 		return nil
 	}
 
-	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource(logger), logger)
+	source := licensei.NewCacheProjectSource(
+		licensei.NewAggregatedDependencySource(logger, globalOptions.Path),
+		logger,
+	)
 	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err

@@ -2,7 +2,7 @@ package licensei_test
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	. "github.com/goph/licensei/internal/licensei"
@@ -23,7 +23,7 @@ func TestJsonListView_Render(t *testing.T) {
 		},
 	}
 
-	result, err := ioutil.ReadFile("testdata/list/golden0.json")
+	result, err := os.ReadFile("testdata/list/golden0.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +53,7 @@ func TestTableListView_Render(t *testing.T) {
 		},
 	}
 
-	result, err := ioutil.ReadFile("testdata/list/golden0.table")
+	result, err := os.ReadFile("testdata/list/golden0.table")
 	if err != nil {
 		t.Fatal(err)
 	}

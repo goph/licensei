@@ -17,7 +17,7 @@ type headerOptions struct {
 	authors     []string
 }
 
-func NewHeaderCommand() *cobra.Command {
+func NewHeaderCommand(globalOptions *GlobalOptions) *cobra.Command {
 	var options headerOptions
 
 	cmd := &cobra.Command{
@@ -29,24 +29,28 @@ func NewHeaderCommand() *cobra.Command {
 			options.ignoreFiles = viper.GetStringSlice("header.ignoreFiles")
 			options.authors = viper.GetStringSlice("header.authors")
 
-			return runHeader(options)
+			return runHeader(globalOptions, options)
 		},
 	}
 
 	return cmd
 }
 
-func runHeader(options headerOptions) error {
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
+func runHeader(globalOptions *GlobalOptions, options headerOptions) (err error) {
+	target := globalOptions.Path
+
+	if target == "" {
+		target, err = os.Getwd()
+		if err != nil {
+			return err
+		}
 	}
 
 	violations, err := licensei.HeaderChecker{
 		IgnorePaths: options.ignorePaths,
 		IgnoreFiles: options.ignoreFiles,
 		Authors:     options.authors,
-	}.Check(wd, options.template)
+	}.Check(target, options.template)
 	if err != nil {
 		return err
 	}

@@ -17,7 +17,7 @@ type statOptions struct {
 	githubToken string
 }
 
-func NewStatCommand() *cobra.Command {
+func NewStatCommand(globalOptions *GlobalOptions) *cobra.Command {
 	var options statOptions
 
 	cmd := &cobra.Command{
@@ -26,19 +26,22 @@ func NewStatCommand() *cobra.Command {
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			options.githubToken = viper.GetString("github_token")
 
-			return runStat(options, cmd.OutOrStderr())
+			return runStat(globalOptions, options, cmd.OutOrStderr())
 		},
 	}
 
 	return cmd
 }
 
-func runStat(options statOptions, stdout io.Writer) error {
+func runStat(globalOptions *GlobalOptions, options statOptions, stdout io.Writer) error {
 	logger := slog.Default()
 
 	logger.Debug("start stat")
 
-	source := licensei.NewCacheProjectSource(licensei.NewAggregatedDependencySource(logger), logger)
+	source := licensei.NewCacheProjectSource(
+		licensei.NewAggregatedDependencySource(logger, globalOptions.Path),
+		logger,
+	)
 	dependencies, err := source.Dependencies()
 	if err != nil {
 		return err
